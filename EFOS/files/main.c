@@ -1,9 +1,18 @@
 #include <system.h>
+#include <hal.h>
 
 void kmain (void* MultibootStructure)
 {
     Console_Clear();
     Print_Info("EFOS will now start booting");
+    Gdt_Install();
+    Print_Info("GDT Installed Successfully");
+    Idt_Install();
+    Print_Info("IDT Installed Successfully");
+    Isrs_Install();
+    Print_Info("Isrs Installed Successfully");
+    Irq_Install();
+    Print_Info("Irq Installed Successfully");
 }
 
 void Print_Info(string txt)
