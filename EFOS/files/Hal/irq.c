@@ -27,7 +27,7 @@ void *irq_routines[16] =
 void irq_install_handler(int irq, void (*handler)(struct regs *r))
 {
     irq_routines[irq] = handler;
-        Console_Write_Char('b');
+        
 }
 
 void irq_uninstall_handler(int irq)
@@ -71,12 +71,12 @@ void Irq_Install()
     idt_set_gate(45, (unsigned)irq13, 0x08, 0x8E);
     idt_set_gate(46, (unsigned)irq14, 0x08, 0x8E);
     idt_set_gate(47, (unsigned)irq15, 0x08, 0x8E);
-        Console_Write_Char('b');
+       
 }
 
 void irq_handler(struct regs *r)
 {
-    
+    Console_Write_Char('c');
     void (*handler)(struct regs *r);
 
     

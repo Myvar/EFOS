@@ -116,6 +116,7 @@ void Isrs_Install()
 
 void fault_handler(struct regs *r)
 {
+    
     if (r->int_no < 32)
     {
       //  puts(exception_messages[r->int_no]); //old os code

@@ -11,11 +11,16 @@ void kmain (void* MultibootStructure)
     Print_Info("IDT Installed Successfully");
     Isrs_Install();
     Print_Info("Isrs Installed Successfully");
+    
     Irq_Install();
     Print_Info("Irq Installed Successfully");
     Setup_Paging();
     Print_Info("Paging Installed Successfully");
     Keyboard_Install();
+    Print_Info("Installed Keybord");
+    
+    __asm__ __volatile__ ("sti");
+
 }
 
 void Print_Info(string txt)

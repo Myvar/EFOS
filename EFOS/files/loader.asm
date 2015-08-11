@@ -39,7 +39,6 @@ align 4
 stack:
       TIMES STACKSIZE db 0
 
-
 global gdt_flush
 extern gp
 gdt_flush:
@@ -532,3 +531,15 @@ write_cr3:
     mov cr3, eax
     pop ebp
     retn
+
+
+; Here is the definition of our BSS section. Right now, we'll use
+; it just to store the stack. Remember that a stack actually grows
+; downwards, so we declare the size of the data before declaring
+; the identifier '_sys_stack'
+SECTION .bss
+    resb 8192               ; This reserves 8KBytes of memory here
+sys_stack:
+
+
+

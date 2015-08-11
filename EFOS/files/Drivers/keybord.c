@@ -44,10 +44,9 @@ unsigned char kbdus[128] =
 void keyboard_handler(struct regs *r)
 {
     unsigned char scancode;
-
+    Console_Write_Char('a');
     /* Read from the keyboard's data buffer */
     scancode = inportb(0x60);
-    Console_Write_Char('a');
    
     if (scancode & 0x80)
     {
@@ -69,4 +68,5 @@ return kbdus[c];
 void Keyboard_Install()
 {
     irq_install_handler(1, keyboard_handler);
+    
 }

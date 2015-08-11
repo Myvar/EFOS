@@ -2,7 +2,7 @@
 #define __HAL_H__
 
 #include <types.h>
-
+#include <system.h>
 struct regs
 {
     unsigned int gs, fs, es, ds;
