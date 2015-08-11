@@ -1,26 +1,67 @@
 #include <system.h>
-#include <hal.h>
+
+void *memcpy(void *dest, const void *src, size_t count)
+{
+    const char *sp = (const char *)src;
+    char *dp = (char *)dest;
+    for(; count != 0; count--) *dp++ = *sp++;
+    return dest;
+}
+
+void *memset(void *dest, char val, size_t count)
+{
+    char *temp = (char *)dest;
+    for( ; count != 0; count--) *temp++ = val;
+    return dest;
+}
+
+unsigned short *memsetw(unsigned short *dest, unsigned short val, size_t count)
+{
+    unsigned short *temp = (unsigned short *)dest;
+    for( ; count != 0; count--) *temp++ = val;
+    return dest;
+}
+
+size_t strlen(const char *str)
+{
+    size_t retval;
+    for(retval = 0; *str != '\0'; str++) retval++;
+    return retval;
+}
+
+unsigned char inportb (unsigned short _port)
+{
+    unsigned char rv;
+    __asm__ __volatile__ ("inb %1, %0" : "=a" (rv) : "dN" (_port));
+    return rv;
+}
+
+void outportb (unsigned short _port, unsigned char _data)
+{
+    __asm__ __volatile__ ("outb %1, %0" : : "dN" (_port), "a" (_data));
+}
 
 void kmain (void* MultibootStructure)
 {
     Console_Clear();
-    Print_Info("EFOS will now start booting");
-    Gdt_Install();
+    Print_Info("Starting EFOS...");
+    
+    gdt_install();
     Print_Info("GDT Installed Successfully");
-    Idt_Install();
+    idt_install();
     Print_Info("IDT Installed Successfully");
-    Isrs_Install();
-    Print_Info("Isrs Installed Successfully");
-    
-    Irq_Install();
-    Print_Info("Irq Installed Successfully");
-    Setup_Paging();
-    Print_Info("Paging Installed Successfully");
-    Keyboard_Install();
-    Print_Info("Installed Keybord");
-    
-    __asm__ __volatile__ ("sti");
+    isrs_install();
+    Print_Info("ISRS Installed Successfully");
+    irq_install();
+    Print_Info("IRQ Installed Successfully");
+    timer_install();
+    Print_Info("Timer Installed Successfully");
+    keyboard_install();
+    Print_Info("Keyboard Installed Successfully");
 
+    __asm__ __volatile__ ("sti");
+    
+    Print_Info("System is ready now.");
 }
 
 void Print_Info(string txt)

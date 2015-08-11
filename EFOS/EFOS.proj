@@ -1,1 +1,1 @@
-{"Name":"EFOS","Files":["loader.asm","main.c","include\\system.h","include\\types.h","Hal\\console.c","Hal\\gdt.c","Hal\\idt.c","Hal\\io.c","Hal\\irq.c","Hal\\isrs.c","include\\hal.h","utils.c","shell.c","Drivers","Drivers\\keybord.c","Hal\\paging.c"]}
+{"Name":"EFOS","Files":["loader.asm","main.c","include\\system.h","include\\types.h","Hal\\console.c","Hal\\gdt.c","Hal\\idt.c","Hal\\irq.c","Hal\\isrs.c","Hal\\keyboard.c","Hal\\timer.c"]}

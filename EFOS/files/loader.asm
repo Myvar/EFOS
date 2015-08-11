@@ -1,44 +1,56 @@
-bits 32
+; bkerndev - Bran's Kernel Development Tutorial
+; By:   Brandon F. (friesenb@gmail.com)
+; Desc: Kernel entry point, stack, and Interrupt Service Routines.
+;
+; Notes: No warranty expressed or implied. Use at own risk.
+;
+; This is the kernel's entry point. We could either call main here,
+; or we can use this to setup the stack or other nice stuff, like
+; perhaps setting up the GDT and segments. Please note that interrupts
+; are disabled at this point: More on interrupts later!
+[BITS 32]
+global start
+start:
+    mov esp, sys_stack     ; This points the stack to our new stack area
+    jmp stublet
 
-global loader
-extern kmain
+; This part MUST be 4byte aligned, so we solve that issue using 'ALIGN 4'
+ALIGN 4
+mboot:
+    ; Multiboot macros to make a few lines later more readable
+    MULTIBOOT_PAGE_ALIGN    equ 1<<0
+    MULTIBOOT_MEMORY_INFO   equ 1<<1
+    MULTIBOOT_AOUT_KLUDGE   equ 1<<16
+    MULTIBOOT_HEADER_MAGIC  equ 0x1BADB002
+    MULTIBOOT_HEADER_FLAGS  equ MULTIBOOT_PAGE_ALIGN | MULTIBOOT_MEMORY_INFO | MULTIBOOT_AOUT_KLUDGE
+    MULTIBOOT_CHECKSUM  equ -(MULTIBOOT_HEADER_MAGIC + MULTIBOOT_HEADER_FLAGS)
+    EXTERN code, bss, end
 
-; Multiboot header
-MODULEALIGN equ   1<<0
-MEMINFO     equ   1<<1
-FLAGS       equ   MODULEALIGN | MEMINFO
-MAGIC       equ   0x1BADB002
-CHECKSUM    equ   -(MAGIC + FLAGS)
+    ; This is the GRUB Multiboot header. A boot signature
+    dd MULTIBOOT_HEADER_MAGIC
+    dd MULTIBOOT_HEADER_FLAGS
+    dd MULTIBOOT_CHECKSUM
+    
+    ; AOUT kludge - must be physical addresses. Make a note of these:
+    ; The linker script fills in the data for these ones!
+    dd mboot
+    dd code
+    dd bss
+    dd end
+    dd start
 
-MultibootHeader:
-      dd MAGIC
-      dd FLAGS
-      dd CHECKSUM
-      
-STACKSIZE   equ 0x4000        ; 16 KB
+; This is an endless loop here. Make a note of this: Later on, we
+; will insert an 'extern _main', followed by 'call _main', right
+; before the 'jmp $'.
+stublet:
+    extern kmain
+    call kmain
+    jmp $
 
-loader:
-      cmp eax, 0x2BADB002     ; verify booted with grub
-      jne .bad
-      
-      mov esp, STACKSIZE + stack
-      mov ax, 0x10
-      mov ds, ax
-      mov es, ax
-      mov fs, ax
-      mov gs, ax
-      
-      push ebx
-      call kmain
-      
-.bad:
-      cli
-      hlt
-      
-align 4
-stack:
-      TIMES STACKSIZE db 0
-
+; This will set up our new segment registers. We need to do
+; something special in order to set CS. We do what is called a
+; far jump. A jump that includes a segment as well as an offset.
+; This is declared in C as 'extern void gdt_flush();'
 global gdt_flush
 extern gp
 gdt_flush:
@@ -504,35 +516,6 @@ irq_common_stub:
     add esp, 8
     iret
 
-[global read_cr0]
-read_cr0:
-    mov eax, cr0
-    retn
-
-[global write_cr0]
-write_cr0:
-    push ebp
-    mov ebp, esp
-    mov eax, [ebp+8]
-    mov cr0,  eax
-    pop ebp
-    retn
-
-[global read_cr3]
-read_cr3:
-    mov eax, cr3
-    retn
-
-[global write_cr3]
-write_cr3:
-    push ebp
-    mov ebp, esp
-    mov eax, [ebp+8]
-    mov cr3, eax
-    pop ebp
-    retn
-
-
 ; Here is the definition of our BSS section. Right now, we'll use
 ; it just to store the stack. Remember that a stack actually grows
 ; downwards, so we declare the size of the data before declaring
@@ -540,6 +523,3 @@ write_cr3:
 SECTION .bss
     resb 8192               ; This reserves 8KBytes of memory here
 sys_stack:
-
-
-
