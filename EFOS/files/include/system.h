@@ -33,5 +33,9 @@ extern void Console_Write_Char_Colored (char c, uint8 color);
 extern void Console_Write_String (string s);
 extern void Console_Write_String_Colored (string s, uint8 color);
 
+extern void StartShell();
 
+extern void Keyboard_Install();
+
+extern void Setup_Paging();
 #endif

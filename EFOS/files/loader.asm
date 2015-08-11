@@ -53,13 +53,14 @@ gdt_flush:
     jmp 0x08:flush2
 flush2:
     ret
-      
+
+; Loads the IDT defined in '_idtp' into the processor.
+; This is declared in C as 'extern void idt_load();'
 global idt_load
 extern idtp
 idt_load:
     lidt [idtp]
     ret
-
 
 ; In just a few pages in this tutorial, we will add our Interrupt
 ; Service Routines (ISRs) right here!
@@ -346,7 +347,6 @@ isr_common_stub:
     add esp, 8
     iret
 
-
 global irq0
 global irq1
 global irq2
@@ -505,3 +505,30 @@ irq_common_stub:
     add esp, 8
     iret
 
+[global read_cr0]
+read_cr0:
+    mov eax, cr0
+    retn
+
+[global write_cr0]
+write_cr0:
+    push ebp
+    mov ebp, esp
+    mov eax, [ebp+8]
+    mov cr0,  eax
+    pop ebp
+    retn
+
+[global read_cr3]
+read_cr3:
+    mov eax, cr3
+    retn
+
+[global write_cr3]
+write_cr3:
+    push ebp
+    mov ebp, esp
+    mov eax, [ebp+8]
+    mov cr3, eax
+    pop ebp
+    retn
