@@ -1,0 +1,5 @@
+loader.asm
+main.c
+include\system.h
+include\types.h
+Hal\console.c
