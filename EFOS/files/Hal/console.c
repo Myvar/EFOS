@@ -1,9 +1,14 @@
 #include <system.h>
-
+#include <shell.h>
 UPoint ConsoleCursor = {0, 0};
 UPoint ConsoleSize = {ConsoleWidth, ConsoleHeight};
 
 uint8* VideoRam = (uint8*)0xb8000;
+
+
+
+
+
 
 void Console_Clear()
 {
@@ -12,6 +17,13 @@ void Console_Clear()
         VideoRam[i] = 0;
 }
 
+void Console_Read_Line()
+{
+    
+    inreadline = 1;
+   
+}
+    
 void Console_Write_Char(char c)
 {
     Console_Write_Char_Colored(c, ConsoleDefaultColor);
@@ -46,6 +58,13 @@ void Console_Write_Char_Colored (char c, uint8 color)
     {
         ConsoleCursor.X = 0;
         ConsoleCursor.Y ++;
+     
+    }
+    
+    else if(c == '\t')
+    {
+        
+        ConsoleCursor.X = ConsoleCursor.X + 4;
     }
     else
     {

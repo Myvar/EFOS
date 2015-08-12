@@ -41,6 +41,23 @@ void outportb (unsigned short _port, unsigned char _data)
     __asm__ __volatile__ ("outb %1, %0" : : "dN" (_port), "a" (_data));
 }
 
+
+int compare_strings(char a[], char b[])
+{
+   int c = 0;
+ 
+   while (a[c] == b[c]) {
+      if (a[c] == '\0' || b[c] == '\0')
+         break;
+      c++;
+   }
+ 
+   if (a[c] == '\0' && b[c] == '\0')
+      return 0;
+   else
+      return -1;
+}
+
 void kmain (void* MultibootStructure)
 {
     Console_Clear();
@@ -54,7 +71,9 @@ void kmain (void* MultibootStructure)
     Print_Info("ISRS Installed Successfully");
     irq_install();
     Print_Info("IRQ Installed Successfully");
-    timer_install();
+    setup_paging();
+    Print_Info("Paging Installed Successfully");
+     timer_install();
     Print_Info("Timer Installed Successfully");
     keyboard_install();
     Print_Info("Keyboard Installed Successfully");
@@ -62,6 +81,12 @@ void kmain (void* MultibootStructure)
     __asm__ __volatile__ ("sti");
     
     Print_Info("System is ready now.");
+    
+    init_shell();
+    for(;;)
+    {
+        shell();
+    }
 }
 
 void Print_Info(string txt)

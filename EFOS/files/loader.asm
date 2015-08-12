@@ -516,6 +516,34 @@ irq_common_stub:
     add esp, 8
     iret
 
+    [global read_cr0]
+read_cr0:
+    mov eax, cr0
+    retn
+
+[global write_cr0]
+write_cr0:
+    push ebp
+    mov ebp, esp
+    mov eax, [ebp+8]
+    mov cr0,  eax
+    pop ebp
+    retn
+
+[global read_cr3]
+read_cr3:
+    mov eax, cr3
+    retn
+
+[global write_cr3]
+write_cr3:
+    push ebp
+    mov ebp, esp
+    mov eax, [ebp+8]
+    mov cr3, eax
+    pop ebp
+    retn
+    
 ; Here is the definition of our BSS section. Right now, we'll use
 ; it just to store the stack. Remember that a stack actually grows
 ; downwards, so we declare the size of the data before declaring

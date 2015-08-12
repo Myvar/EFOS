@@ -32,6 +32,7 @@ extern void Console_Write_Char(char c);
 extern void Console_Write_Char_Colored (char c, uint8 color);
 extern void Console_Write_String (string s);
 extern void Console_Write_String_Colored (string s, uint8 color);
+extern void Console_Read_Line();
 
 typedef int size_t;
 
@@ -51,6 +52,8 @@ extern unsigned short *memsetw(unsigned short *dest, unsigned short val, size_t 
 extern size_t strlen(const char *str);
 extern unsigned char inportb (unsigned short _port);
 extern void outportb (unsigned short _port, unsigned char _data);
+extern int compare_strings(char a[], char b[]);
+
 
 /* GDT.C */
 extern void gdt_set_gate(int num, unsigned long base, unsigned long limit, unsigned char access, unsigned char gran);
@@ -75,4 +78,7 @@ extern void timer_install();
 /* KEYBOARD.C */
 extern void keyboard_install();
 
+/* Paging */
+extern void setup_paging();
+extern void *maptable(unsigned long n);
 #endif
