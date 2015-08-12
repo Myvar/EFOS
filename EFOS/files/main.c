@@ -42,20 +42,28 @@ void outportb (unsigned short _port, unsigned char _data)
 }
 
 
-int compare_strings(char a[], char b[])
+int compare_strings(char *first, char *second)
 {
-   int c = 0;
- 
-   while (a[c] == b[c]) {
-      if (a[c] == '\0' || b[c] == '\0')
-         break;
-      c++;
+
+   while(*first==*second)
+   {
+      if ( *first == '\0' || *second == '\0' )
+      {
+          break;
+      }
+      first  = first + 1;
+      second = second + 1;
    }
- 
-   if (a[c] == '\0' && b[c] == '\0')
-      return 0;
+   if( *first == '\0' && *second == '\0' )
+   {
+       Console_Write_Char('t');
+       return 0;
+   }
    else
+   {
+              Console_Write_Char('f');
       return -1;
+  }
 }
 
 void kmain (void* MultibootStructure)
@@ -83,10 +91,9 @@ void kmain (void* MultibootStructure)
     Print_Info("System is ready now.");
     
     init_shell();
-    for(;;)
-    {
-        shell();
-    }
+   
+    shell();
+    
 }
 
 void Print_Info(string txt)

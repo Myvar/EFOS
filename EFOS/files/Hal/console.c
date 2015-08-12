@@ -7,7 +7,7 @@ uint8* VideoRam = (uint8*)0xb8000;
 
 
 
-
+int inreadline = 0; 
 
 
 void Console_Clear()
@@ -20,7 +20,34 @@ void Console_Clear()
 void Console_Read_Line()
 {
     
-    inreadline = 1;
+    inreadline    = 1;
+    Readline      = 0;
+    
+    while (*Readline != 0)
+    {
+        *Readline = 0;
+        Readline = Readline + 1;
+    }
+    Readline      = 0;
+    ReadLineIndex = 0;
+    while(inreadline == 1)
+    {
+
+        char * buf = Readline;
+        while (*buf != 0)
+        {
+            if(*buf == '\n')
+            {
+                Readline   = buf;
+                *Readline = 0;
+                inreadline = 0;
+                break;
+            }
+            buf = buf + 1;
+        }
+        
+    }
+    
    
 }
     

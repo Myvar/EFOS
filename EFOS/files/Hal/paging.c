@@ -28,10 +28,10 @@ write_cr0(read_cr0() | 0x80000000); // set the paging bit in CR0 to 1
 
 }
 
-void *maptable(unsigned long n)
+/*void *maptable(unsigned long n)
 {
     return page_table[n];
-}
+}*/
 
 //void *malloc(unsigned long n)
 //{

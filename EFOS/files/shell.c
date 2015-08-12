@@ -1,15 +1,15 @@
 #include <system.h>
 #include <shell.h>
 
-char * Readline;
+char * Readline  = "";
 int ReadLineIndex = 0;
-int NumberOfCommands = 0;
-int inreadline = 0; 
-
+int NumberOfCommands;
 command_table_t CommandTable[MAX_COMMANDS];
+
 void init_shell()
 {
     add_new_command("help", "Tipe: help <command>, to get help!", help_command);
+    
     add_new_command("", "", empty_command);
 }
 
@@ -20,36 +20,21 @@ void help_command()
 
 void empty_command()
 {
-    
+    Console_Write_String("\n Help:\n");
 }
 
-char *strcpyc(char *s1, char s2)
-{
-    char *s1_p = s1;
-    *s1++ = s2;
-    return s1_p;
-}
 
 void shell()
 {
+    
     Console_Write_String("\nEFOS>");
     Console_Read_Line();
+   // Readline = 0;
+    char * buf = Readline;
+    buf = 0;
     
-    while(inreadline == 1)
-    {
-        int x = 0;
-        x++;
-        if(x == 10)
-        {
-         x = 0;   
-        }
-     if(inreadline == 0 )
-     {
-         break;
-     }
-    }
-    Console_Write_String_Colored("done",ColorYellow);
-     int i = findCommand(Readline);
+    Console_Write_String_Colored(buf,ColorYellow);
+      int i = findCommand(Readline);
      
     if(i >= 0)
     {
@@ -59,22 +44,25 @@ void shell()
     }
     else
     {
-        return;
+        Console_Write_String_Colored("\nCommand Not Found",ColorRed);
+        //Console_Write_String_Colored(i,ColorRed);
     }
-     
-    return;
-    void (*command_run)(void);
+    
+    
+    //  void (*command_run)(void);
 }
 
-void add_new_command(char *name, char* description, void *function)
+void add_new_command(char *name, char *description, void *function)
 {
     if(NumberOfCommands + 1 < MAX_COMMANDS)
     {
         NumberOfCommands++;
  
         CommandTable[NumberOfCommands].name = name;
+        
         CommandTable[NumberOfCommands].description = description;
         CommandTable[NumberOfCommands].function = function;
+        
     }
     return;
 }
@@ -83,16 +71,22 @@ void add_new_command(char *name, char* description, void *function)
 
 int findCommand(char* command)
 {
-    int i;
+     int i;
     int ret;
  
-    for(i = 0; i < NumberOfCommands + 1; i++)
+    for(i = 0; i <= NumberOfCommands - 1; i++)
     {
-        ret = compare_strings(command, CommandTable[i].name);
+        char * buf = CommandTable[NumberOfCommands - 1].name;
+        char * buf1 = command;        
+        Console_Write_String(buf);
+        Console_Write_String(buf1);
+        buf  = 0;
+        buf1 = 0;
+        ret  = compare_strings(command, buf);
  
         if(ret == 0)
             return i;
         else
             return -1;
-    }
+        }
 }

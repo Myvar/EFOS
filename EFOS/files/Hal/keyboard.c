@@ -84,15 +84,12 @@ void keyboard_handler(struct regs *r)
         if(inreadline == 1)
         {
             Console_Write_Char(kbdus[scancode]);
-            if(kbdus[scancode] != '\n')
-            {
-                *Readline = kbdus[scancode];
-                Readline = Readline + 1;
-            }
-            else
-            {
-                inreadline = 0;
-            }
+            
+            
+            *Readline++ = kbdus[scancode];
+            // Readline      = Readline + 1;
+                ReadLineIndex = ReadLineIndex + 1;
+            
         }
     }
 }
